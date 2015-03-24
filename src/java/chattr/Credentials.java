@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 
 
 public class Credentials {
-    private Connection getConnection() throws SQLException {
+    public static Connection getConnection() throws SQLException {
         Connection conn = null;
         
         try {
