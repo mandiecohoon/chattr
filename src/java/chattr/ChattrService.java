@@ -32,13 +32,20 @@ import javax.ws.rs.core.Response;
 public class ChattrService {
     
     @GET
+    @Produces("application/json")
+    public Response doGet() {
+        return Response.ok(getRoomList("SELECT * FROM room"), MediaType.APPLICATION_JSON).build();
+    }
+    
+    @GET
     @Path("{roomId}")
     @Produces("application/json")
     public Response doGet(@PathParam("roomId") int id) {
-        return Response.ok(getResults("SELECT * FROM product WHERE roomId = ?", String.valueOf(id)), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getMessageList("SELECT * FROM message WHERE roomId = ?", String.valueOf(id)), MediaType.APPLICATION_JSON).build();
+        
     }
     
-    private String getResults(String query, String... params) {
+    private String getRoomList(String query, String... params) {
         String result = "";
         
         try (Connection conn = Credentials.getConnection()) {
@@ -56,10 +63,41 @@ public class ChattrService {
             gen.writeStartArray();
             while (rs.next()) {
                 gen.writeStartObject()
-                    .write("productId", rs.getInt("productID"))
-                    .write("name", rs.getString("name"))
+                    .write("roomId", rs.getInt("roomId"))
+                    .write("roomName", rs.getString("roomName"))
                     .write("description", rs.getString("description"))
-                    .write("quantity", rs.getInt("quantity"))
+                    .writeEnd();
+            }
+            gen.writeEnd();
+            gen.close();
+            result = out.toString();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ChattrService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+    
+    private String getMessageList(String query, String... params) {
+        String result = "";
+        
+        try (Connection conn = Credentials.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            
+            for (int i = 1; i <= params.length; i++) {
+                pstmt.setString(i, params[i - 1]);
+            }
+            
+            ResultSet rs = pstmt.executeQuery();
+            StringWriter out = new StringWriter();
+            JsonGeneratorFactory factory = Json.createGeneratorFactory(null);
+            JsonGenerator gen = factory.createGenerator(out);
+            
+            gen.writeStartArray();
+            while (rs.next()) {
+                gen.writeStartObject()
+                    .write("messageId", rs.getInt("messageId"))
+                    .write("message", rs.getString("message"))
                     .writeEnd();
             }
             gen.writeEnd();
