@@ -16,7 +16,12 @@ import java.util.logging.Logger;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -25,6 +30,14 @@ import javax.ws.rs.Path;
 
 @Path("/room")
 public class ChattrService {
+    
+    @GET
+    @Path("{roomId}")
+    @Produces("application/json")
+    public Response doGet(@PathParam("roomId") int id) {
+        return Response.ok(getResults("SELECT * FROM product WHERE roomId = ?", String.valueOf(id)), MediaType.APPLICATION_JSON).build();
+    }
+    
     private String getResults(String query, String... params) {
         String result = "";
         
