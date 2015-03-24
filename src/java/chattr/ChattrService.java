@@ -6,6 +6,7 @@
 
 package chattr;
 
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,9 +15,14 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -43,6 +49,57 @@ public class ChattrService {
     public Response doGet(@PathParam("roomId") int id) {
         return Response.ok(getMessageList("SELECT * FROM message WHERE roomId = ?", String.valueOf(id)), MediaType.APPLICATION_JSON).build();
         
+    }
+    
+    @POST
+    @Consumes("application/json")
+    public Response doPost(String data) throws SQLException {
+        JsonReader reader = Json.createReader(new StringReader(data));
+        JsonObject json = reader.readObject();
+        Connection conn = Credentials.getConnection();
+        
+        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO `room`(`roomId`, `roomName`, `description`) "
+               + "VALUES ("
+               +"null, '"
+               + json.getString("roomName") + "', '"
+               + json.getString("description") +"'"
+               +");"
+        );
+        try {
+            pstmt.executeUpdate();
+        } catch (SQLException ex) {
+            return Response.status(500).entity("500: Error creating chat room.").build();
+        }
+        
+        PreparedStatement pstmtID = conn.prepareStatement("SELECT `roomId` FROM room ORDER BY `roomId` DESC LIMIT 1");
+        ResultSet rs = pstmtID.executeQuery();
+        rs.next();
+        String id = String.valueOf(rs.getInt("roomId"));
+        
+        return Response.ok(getMessageList("SELECT * FROM product WHERE roomId = ?", id), MediaType.APPLICATION_JSON).build();
+    }
+   
+    @PUT
+    @Path("{id}")
+    @Consumes("application/json")
+    public Response doPut(@PathParam("id") int id, String data) throws SQLException {
+        JsonReader reader = Json.createReader(new StringReader(data));
+        JsonObject json = reader.readObject();
+        Connection conn = Credentials.getConnection();
+        
+        PreparedStatement pstmt = conn.prepareStatement("UPDATE `room` SET `name`='"
+                +json.getString("roomName")+"',`description`='"
+                +json.getString("description")+"'"
+                + "WHERE `roomId`="
+                +id
+        );
+        try {
+            pstmt.executeUpdate();
+        } catch (SQLException ex) {
+            return Response.status(500).entity("500: Error updating chat room info").build();
+        }
+        
+        return Response.ok(getMessageList("SELECT * FROM room WHERE roomId = " + id), MediaType.APPLICATION_JSON).build();
     }
     
     private String getRoomList(String query, String... params) {
