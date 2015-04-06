@@ -6,22 +6,24 @@
 
 function getRoomList() {
     $.ajax({
-       url: 'room',
-       method: 'GET',                   
+       url: 'rs/room',
+       method: 'GET',
        success: function(data) {
-           $('#room').json(data);
+           $('#room').text(JSON.stringify(data));
        }
     });
 }
 function createRoom() {
     $.ajax({
-       url: 'room',
+       url: 'rs/room',
        method: 'POST',
-       data: { 
+       data: JSON.stringify({ 
            'roomId' : 4,
            'roomName' : $('#roomName').val(),
            'description' : $('#description').val()
-        },
+        }),
+        contentType: "application/json",
        success: getRoomList
     });
+    getRoomList();
 }
