@@ -27,3 +27,13 @@ function createRoom() {
     });
     getRoomList();
 }
+
+function getMessages(id) {
+    $.ajax({
+       url: 'rs/room/' + id,
+       method: 'GET',
+       success: function(data) {
+           $('#messages').text(JSON.stringify(data));
+       }
+    });
+}

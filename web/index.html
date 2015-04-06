@@ -13,11 +13,15 @@ and open the template in the editor.
         <script src="js/chattr.js"></script>
     </head>
     <body>
-        <div>TODO write content</div>
-        <input type="text" id="roomName" name="roomName">
-        <input type="text" id="description" name="description">
-        <button onclick="createRoom()">Create Room</button>
-        <button onclick="getRoomList()">Refresh Room List</button>
-        <p id="room"></p>
+        <div>
+            <p><input type="text" id="roomName" name="roomName"></p>
+            <p><input type="text" id="description" name="description"></p>
+            <p><button onclick="createRoom()">Create Room</button></p>
+            <p><button onclick="getRoomList()">Refresh Room List</button></p>
+            <p id="room"></p>
+        </div>
+        <p><input type="text" id="roomId" name="roomId"></p>
+        <p><button onclick="getMessages(1)">Get messages</button></p>
+        <p id="messages"></p>
     </body>
 </html>
