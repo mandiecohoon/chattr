@@ -4,6 +4,10 @@
  * and open the template in the editor.
  */
 
+$(document).ready(function() {
+    getRoomList();
+});
+
 function getRoomList() {
     $.ajax({
        url: 'rs/room',
@@ -31,9 +35,10 @@ function createRoom() {
 function getMessages(id) {
     $.ajax({
        url: 'rs/room/' + id,
+       dataType: 'json',
        method: 'GET',
        success: function(data) {
            $('#messages').text(JSON.stringify(data));
-       }
+       },
     });
 }

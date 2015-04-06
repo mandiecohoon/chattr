@@ -9,19 +9,44 @@ and open the template in the editor.
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+        <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
         <script src="js/chattr.js"></script>
+        <style>
+            body {
+                margin: auto;
+                width: 70%;
+                padding: 10px;
+            }
+            .row {
+                border: 1px solid black;
+                border-radius: 5px;
+                padding: 10px;
+            }
+            .col-md-4 {
+                border-left: 2px solid black;
+                padding: 20px;
+            }
+        </style>
     </head>
     <body>
-        <div>
-            <p><input type="text" id="roomName" name="roomName"></p>
-            <p><input type="text" id="description" name="description"></p>
-            <p><button onclick="createRoom()">Create Room</button></p>
-            <p><button onclick="getRoomList()">Refresh Room List</button></p>
-            <p id="room"></p>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-8">
+                    <p id="room"></p>
+                    <p id="messages"></p>
+                </div>
+                <div class="col-md-4">
+                    <p><input type="text" id="roomName" name="roomName"></p>
+                    <p><input type="text" id="description" name="description"></p>
+                    <p><button onclick="createRoom()">Create Room</button></p>
+                    <p><button onclick="getRoomList()">Refresh Room List</button></p>
+                    
+                    <p><input type="text" id="roomId" name="roomId"></p>
+                    <p><button onclick="getMessages($('#roomId').val())">Get messages</button></p>
+                </div>
+            </div>
         </div>
-        <p><input type="text" id="roomId" name="roomId"></p>
-        <p><button onclick="getMessages(1)">Get messages</button></p>
-        <p id="messages"></p>
     </body>
 </html>
