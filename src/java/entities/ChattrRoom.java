@@ -21,26 +21,26 @@ import javax.persistence.NamedQuery;
 
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "Chattr.findAll", query = "SELECT r FROM Chattr r"),
-    @NamedQuery(name = "Chattr.findByRoomId", query = "SELECT r FROM Chattr r WHERE r.roomId = :roomId"),
-    @NamedQuery(name = "Chattr.findByName", query = "SELECT r FROM Chattr r WHERE r.roomName = :roomName")
+    @NamedQuery(name = "ChattrRoom.findAll", query = "SELECT r FROM Chattr r"),
+    @NamedQuery(name = "ChattrRoom.findByRoomId", query = "SELECT r FROM Chattr r WHERE r.roomId = :roomId"),
+    @NamedQuery(name = "ChattrRoom.findByName", query = "SELECT r FROM Chattr r WHERE r.roomName = :roomName")
 })
-public class ChattrEntities implements Serializable  {
+public class ChattrRoom implements Serializable  {
     @Id
     private int roomId;
     private String roomName;
     private String description;
     
-    public ChattrEntities() {
+    public ChattrRoom() {
     }
 
-    public ChattrEntities(int roomId, String roomName, String description) {
+    public ChattrRoom(int roomId, String roomName, String description) {
         this.roomId = roomId;
         this.roomName = roomName;
         this.description = description;
     }
     
-    public ChattrEntities(JsonObject json) {
+    public ChattrRoom(JsonObject json) {
         roomId = json.getInt("roomId");
         roomName = json.getString("roomName");
         description = json.getString("description");
