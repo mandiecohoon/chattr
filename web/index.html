@@ -12,6 +12,7 @@ and open the template in the editor.
         <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+        <link href='http://fonts.googleapis.com/css?family=Dancing+Script|Courgette' rel='stylesheet' type='text/css'>
         <script src="js/chattr.js"></script>
         <style>
             body {
@@ -23,6 +24,9 @@ and open the template in the editor.
             .container-fluid {
                 border: 1px solid black;
                 border-radius: 5px;
+            }
+            h1 {
+                font-family: 'Dancing Script', cursive;
             }
             .container-body {
                 padding: 10px;
@@ -41,10 +45,11 @@ and open the template in the editor.
         </style>
     </head>
     <body>
+        <h1>Chattr</h1>
         <div class="container-fluid">
             <div class="row container-body">
                 <div class="col-md-8 content">
-                    <p id="room"></p>
+                    <ul id="room"></ul>
                     <p id="messages"></p>
                     
                 </div>

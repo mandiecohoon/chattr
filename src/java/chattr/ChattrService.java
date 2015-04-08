@@ -6,14 +6,18 @@
 
 package chattr;
 
-import entities.Room;
 import entities.Message;
+import entities.Room;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -49,7 +53,7 @@ public class ChattrService {
     @GET
     public Response getAll() {
         JsonArrayBuilder json = Json.createArrayBuilder();
-        Query q = em.createQuery("ChattrRoom.findAll");
+        Query q = em.createNamedQuery("ChattrRoom.findAll");
         roomList = q.getResultList();
         for (Room r : roomList) {
             json.add(r.toJSON());
@@ -62,7 +66,8 @@ public class ChattrService {
     @Path("{id}")
     public Response getById(@PathParam("id") int id) {
         JsonArrayBuilder json = Json.createArrayBuilder();
-        Query q = em.createQuery("ChattrMessages.findAllById");
+        Query q = em.createNamedQuery("ChattrMessages.findByAllId")
+                .setParameter("roomId", id);
         messageList = q.getResultList();
         for (Message m : messageList) {
             json.add(m.toJSON());
@@ -73,11 +78,25 @@ public class ChattrService {
     // Post a room
     @POST
     @Consumes("application/json")
-    public Response add(JsonObject json) {
+    public Response add(JsonObject json) throws SQLException {
         Response result;
+        
+        // Finds last inserted row and gets the value of the primary key
+        PreparedStatement pstmtID = Credentials.getConnection().prepareStatement("SELECT `roomId` FROM room ORDER BY `roomId` DESC LIMIT 1");
+        ResultSet rs = pstmtID.executeQuery();
+        rs.next();
+        int autoId = rs.getInt("roomId") + 1;
+        // Creates a new object with the same data but with a correct ID
+        JsonObject jsonData;
+        JsonObjectBuilder jsonOB = Json.createObjectBuilder()
+            .add("roomId", autoId)
+            .add("roomName", json.getString("roomName"))
+            .add("description", json.getString("description"));
+        jsonData = jsonOB.build();
+        
         try {
             transaction.begin();
-            Room r = new Room(json);
+            Room r = new Room(jsonData);
             em.persist(r);
             transaction.commit();
             result = Response.ok().build();
@@ -91,11 +110,24 @@ public class ChattrService {
     @POST
     @Path("{id}")
     @Consumes("application/json")
-    public Response add(JsonObject json, @PathParam("id") int id) {
+    public Response add(JsonObject json, @PathParam("id") int id) throws SQLException {
         Response result;
+        // Finds last inserted row and gets the value of the primary key
+        PreparedStatement pstmtID = Credentials.getConnection().prepareStatement("SELECT `messageId` FROM message ORDER BY `messageId` DESC LIMIT 1");
+        ResultSet rs = pstmtID.executeQuery();
+        rs.next();
+        int autoId = rs.getInt("messageId") + 1;
+        // Creates a new object with the same data but with a correct ID
+        JsonObject jsonData;
+        JsonObjectBuilder jsonOB = Json.createObjectBuilder()
+            .add("messageId", autoId)
+            .add("message", json.getString("roomName"))
+            .add("roomId", json.getString("roomId"));
+        jsonData = jsonOB.build();
+        
         try {
             transaction.begin();
-                Message m = new Message(json);
+                Message m = new Message(jsonData);
                 em.persist(m);
                 transaction.commit();
                 result = Response.ok().build();

@@ -13,7 +13,9 @@ function getRoomList() {
        url: 'rs/room',
        method: 'GET',
        success: function(data) {
-           $('#room').text(JSON.stringify(data));
+            //$('#room').text(JSON.stringify(data));
+            tmp1 = JSON.parse(data);
+            drawTable(tmp1);
        }
     });
 }
@@ -22,7 +24,7 @@ function createRoom() {
        url: 'rs/room',
        method: 'POST',
        data: JSON.stringify({ 
-           'roomId' : 4,
+           'roomId' : null,
            'roomName' : $('#roomName').val(),
            'description' : $('#description').val()
         }),
@@ -41,4 +43,17 @@ function getMessages(id) {
            $('#messages').text(JSON.stringify(data));
        },
     });
+}
+
+function drawTable(data) {
+    $("#room").empty();
+    for (var i = 0; i < data.length; i++) {
+        drawRow(data[i]);
+    }
+}
+
+function drawRow(rowData) {
+    var row = $("<ul />")
+    $("#room").append(row);
+    row.append($("<li><a onclick='getMessages(" + rowData.roomId + ")'>" + rowData.roomName + " –  " + rowData.description + "</a></li>"));
 }
