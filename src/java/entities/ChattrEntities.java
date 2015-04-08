@@ -7,6 +7,7 @@
 package entities;
 
 import java.io.Serializable;
+import javax.json.Json;
 import javax.json.JsonObject;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -67,5 +68,13 @@ public class ChattrEntities implements Serializable  {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+    
+    public JsonObject toJSON() {
+        return Json.createObjectBuilder()
+                .add("roomId", roomId)
+                .add("roomName", roomName)
+                .add("description", description)
+                .build();
     }
 }
