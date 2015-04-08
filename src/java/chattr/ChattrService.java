@@ -58,6 +58,7 @@ public class ChattrService {
     @Inject
     UserTransaction transaction;
     
+    // Get room list
     @GET
     public Response getAll() {
         JsonArrayBuilder json = Json.createArrayBuilder();
@@ -69,74 +70,62 @@ public class ChattrService {
         return Response.ok(json.build().toString()).build();
     }
     
-    
+    // Get messages list
     @GET
     @Path("{id}")
     public Response getById(@PathParam("id") int id) {
-        Query q = em.createQuery("SELECT r FROM Chattr r WHERE r.roomId = :roomId");
-        q.setParameter("roomId", id);
-        ChattrRoom r = (ChattrRoom) q.getSingleResult();
-        String out = r.toJSON().toString();
-        return Response.ok(out).build();
-    }
-    @GET
-    @Path("{roomId}")
-    @Produces("application/json")
-    public Response doGet(@PathParam("roomId") int id) {
-        return Response.ok(getMessageList("SELECT * FROM message WHERE roomId = ?", String.valueOf(id)), MediaType.APPLICATION_JSON).build();
-        
+        JsonArrayBuilder json = Json.createArrayBuilder();
+        Query q = em.createQuery("ChattrMessages.findAllById");
+        messageList = q.getResultList();
+        for (ChattrMessages m : messageList) {
+            json.add(m.toJSON());
+        }
+        return Response.ok(json.build().toString()).build();
     }
     
+    // Post a room
     @POST
     @Consumes("application/json")
     public Response add(JsonObject json) {
         Response result;
         try {
             transaction.begin();
-            Chattr r = new Chattr(json);
+            ChattrRoom r = new ChattrRoom(json);
             em.persist(r);
             transaction.commit();
             result = Response.ok().build();
-        } catch (Exception ex) {
+        } catch (Exception exRoom) {
             result = Response.status(500).build();
         }
         return result;
     }
+    
+    // Post a message
     @POST
+    @Path("{id}")
     @Consumes("application/json")
-    public Response doPost(String data) throws SQLException {
-        JsonReader reader = Json.createReader(new StringReader(data));
-        JsonObject json = reader.readObject();
-        Connection conn = Credentials.getConnection();
-        
-        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO `room`(`roomId`, `roomName`, `description`) "
-               + "VALUES ("
-               +"null, '"
-               + json.getString("roomName") + "', '"
-               + json.getString("description") +"'"
-               +");"
-        );
+    public Response add(JsonObject json, @PathParam("id") int id) {
+        Response result;
         try {
-            pstmt.executeUpdate();
-        } catch (SQLException ex) {
-            return Response.status(500).entity("500: Error creating chat room.").build();
+            transaction.begin();
+                ChattrMessages m = new ChattrMessages(json);
+                em.persist(m);
+                transaction.commit();
+                result = Response.ok().build();
+        } catch (Exception exMessages) {
+            result = Response.status(500).build();
         }
-        
-        PreparedStatement pstmtID = conn.prepareStatement("SELECT `roomId` FROM room ORDER BY `roomId` DESC LIMIT 1");
-        ResultSet rs = pstmtID.executeQuery();
-        rs.next();
-        String id = String.valueOf(rs.getInt("roomId"));
-        
-        return Response.ok(getMessageList("SELECT * FROM product WHERE roomId = ?", id), MediaType.APPLICATION_JSON).build();
+        return result;
     }
     
+    // Update a room
     @PUT
     @Consumes("application/json")
     public Response edit(JsonObject json) {
         Response result;
         try {
             transaction.begin();
-            Chattr r = (Chattr) em.createNamedQuery("Chattr.findByRoomId")
+            ChattrRoom r = (ChattrRoom) em.createNamedQuery("Chattr.findByRoomId")
                     .setParameter("roomId", json.getInt("roomId"))
                     .getSingleResult();
             r.setRoomName(json.getString("roomName"));
@@ -149,36 +138,36 @@ public class ChattrService {
         }
         return result;
     }
+    
+    // Update a message
     @PUT
     @Path("{id}")
     @Consumes("application/json")
-    public Response doPut(@PathParam("id") int id, String data) throws SQLException {
-        JsonReader reader = Json.createReader(new StringReader(data));
-        JsonObject json = reader.readObject();
-        Connection conn = Credentials.getConnection();
-        
-        PreparedStatement pstmt = conn.prepareStatement("UPDATE `room` SET `name`='"
-                +json.getString("roomName")+"',`description`='"
-                +json.getString("description")+"'"
-                + "WHERE `roomId`="
-                +id
-        );
+    public Response edit(JsonObject json, @PathParam("id") int id) {
+        Response result;
         try {
-            pstmt.executeUpdate();
-        } catch (SQLException ex) {
-            return Response.status(500).entity("500: Error updating chat room info").build();
+            transaction.begin();
+            ChattrRoom r = (ChattrRoom) em.createNamedQuery("Chattr.findByRoomId")
+                    .setParameter("roomId", json.getInt("roomId"))
+                    .getSingleResult();
+            r.setRoomName(json.getString("roomName"));
+            r.setDescription(json.getString("description"));
+            em.persist(r);
+            transaction.commit();
+            result = Response.ok().build();
+        } catch (Exception ex) {
+            result = Response.status(500).entity(ex.getMessage()).build();
         }
-        
-        return Response.ok(getMessageList("SELECT * FROM room WHERE roomId = " + id), MediaType.APPLICATION_JSON).build();
+        return result;
     }
-    
+
     @DELETE
     @Path("{id}")
     public Response delete(@PathParam("id") int id) {
         Response result;
         try {
             transaction.begin();
-            Chattr r = (Chattr) em.createNamedQuery("Chattr.findByRoomId")
+            ChattrRoom r = (ChattrRoom) em.createNamedQuery("Chattr.findByRoomId")
                     .setParameter("roomId", id).getSingleResult();
             em.remove(r);
             transaction.commit();
