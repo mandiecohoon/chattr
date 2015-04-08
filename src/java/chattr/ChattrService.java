@@ -8,23 +8,12 @@ package chattr;
 
 import entities.ChattrRoom;
 import entities.ChattrMessages;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.stream.JsonGenerator;
-import javax.json.stream.JsonGeneratorFactory;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -36,8 +25,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
@@ -125,7 +112,7 @@ public class ChattrService {
         Response result;
         try {
             transaction.begin();
-            ChattrRoom r = (ChattrRoom) em.createNamedQuery("Chattr.findByRoomId")
+            ChattrRoom r = (ChattrRoom) em.createNamedQuery("ChattrRoom.findByRoomId")
                     .setParameter("roomId", json.getInt("roomId"))
                     .getSingleResult();
             r.setRoomName(json.getString("roomName"));
@@ -138,7 +125,7 @@ public class ChattrService {
         }
         return result;
     }
-    
+    /*
     // Update a message
     @PUT
     @Path("{id}")
@@ -147,7 +134,7 @@ public class ChattrService {
         Response result;
         try {
             transaction.begin();
-            ChattrRoom r = (ChattrRoom) em.createNamedQuery("Chattr.findByRoomId")
+            ChattrRoom r = (ChattrRoom) em.createNamedQuery("ChattrRoom.findByRoomId")
                     .setParameter("roomId", json.getInt("roomId"))
                     .getSingleResult();
             r.setRoomName(json.getString("roomName"));
@@ -160,14 +147,14 @@ public class ChattrService {
         }
         return result;
     }
-
+    */
     @DELETE
     @Path("{id}")
     public Response delete(@PathParam("id") int id) {
         Response result;
         try {
             transaction.begin();
-            ChattrRoom r = (ChattrRoom) em.createNamedQuery("Chattr.findByRoomId")
+            ChattrRoom r = (ChattrRoom) em.createNamedQuery("ChattrRoom.findByRoomId")
                     .setParameter("roomId", id).getSingleResult();
             em.remove(r);
             transaction.commit();

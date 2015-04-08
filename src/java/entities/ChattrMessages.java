@@ -21,8 +21,8 @@ import javax.persistence.NamedQuery;
 
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "ChattrMessages.findAll", query = "SELECT m FROM Chattr m"),
-    @NamedQuery(name = "ChattrMessages.findByRoomId", query = "SELECT m FROM Chattr m WHERE m.roomId = :roomId")
+    @NamedQuery(name = "ChattrMessages.findAll", query = "SELECT m FROM messages m"),
+    @NamedQuery(name = "ChattrMessages.findByAllId", query = "SELECT m FROM messages m WHERE m.roomId = :roomId")
 })
 public class ChattrMessages implements Serializable {
     @Id
@@ -65,7 +65,7 @@ public class ChattrMessages implements Serializable {
     
     public ChattrMessages(JsonObject json) {
         messageId = json.getInt("messageId");
-        message = json.getString("roomName");
+        message = json.getString("message");
         roomId = json.getInt("roomId");
     }
     
