@@ -6,19 +6,26 @@
 
 package chattr;
 
+import entities.ChattrEntities;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.UserTransaction;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -35,7 +42,16 @@ import javax.ws.rs.core.Response;
  */
 
 @Path("/room")
+@RequestScoped
 public class ChattrService {
+    
+    @PersistenceContext(unitName="ChattrPU")
+    EntityManager em;
+
+    List<ChattrEntities> roomList;
+   
+    @Inject
+    UserTransaction transaction;
     
     @GET
     @Produces("application/json")
