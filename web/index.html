@@ -17,34 +17,51 @@ and open the template in the editor.
             body {
                 margin: auto;
                 width: 70%;
+                height: 100%;
                 padding: 10px;
             }
-            .row {
+            .container-fluid {
                 border: 1px solid black;
                 border-radius: 5px;
+            }
+            .container-body {
                 padding: 10px;
             }
-            .col-md-4 {
+            .sidebar {
                 border-left: 2px solid black;
                 padding: 20px;
+                text-align: right;
+            }
+            .message-box {
+                margin: 10px;
+            }
+            .message-box-input {
+                
             }
         </style>
     </head>
     <body>
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-8">
+            <div class="row container-body">
+                <div class="col-md-8 content">
                     <p id="room"></p>
                     <p id="messages"></p>
+                    
                 </div>
-                <div class="col-md-4">
-                    <p><input type="text" id="roomName" name="roomName"></p>
-                    <p><input type="text" id="description" name="description"></p>
+                <div class="col-md-4 sidebar">
+                    <p><input type="text" id="roomName" name="roomName" placeholder="Room Name" class="form-control"></p>
+                    <p><input type="text" id="description" name="description" placeholder="Description" class="form-control"></p>
                     <p><button onclick="createRoom()">Create Room</button></p>
                     <p><button onclick="getRoomList()">Refresh Room List</button></p>
                     
-                    <p><input type="text" id="roomId" name="roomId"></p>
+                    <p><input type="text" id="roomId" name="roomId" placeholder="Room Number" class="form-control"></p>
                     <p><button onclick="getMessages($('#roomId').val())">Get messages</button></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8 message-box form-inline">
+                    <input type="text" id="message-box-input" name="message-box-input" size="75" class="form-control">
+                    <button>Send</button>
                 </div>
             </div>
         </div>
