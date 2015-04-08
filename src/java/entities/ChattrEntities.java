@@ -7,6 +7,7 @@
 package entities;
 
 import java.io.Serializable;
+import javax.json.JsonObject;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
@@ -36,6 +37,12 @@ public class ChattrEntities implements Serializable  {
         this.roomId = roomId;
         this.roomName = roomName;
         this.description = description;
+    }
+    
+    public ChattrEntities(JsonObject json) {
+        roomId = json.getInt("roomId");
+        roomName = json.getString("roomName");
+        description = json.getString("description");
     }
     
     public int getRoomId() {
