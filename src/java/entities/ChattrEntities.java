@@ -6,7 +6,11 @@
 
 package entities;
 
+import java.io.Serializable;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 /**
  *
@@ -14,6 +18,23 @@ import javax.persistence.Entity;
  */
 
 @Entity
-public class ChattrEntities {
+@NamedQueries({
+    @NamedQuery(name = "Chattr.findAll", query = "SELECT r FROM Chattr r"),
+    @NamedQuery(name = "Chattr.findByRoomId", query = "SELECT r FROM Chattr r WHERE r.roomId = :roomId"),
+    @NamedQuery(name = "Chattr.findByName", query = "SELECT r FROM Chattr r WHERE r.roomName = :roomName")
+})
+public class ChattrEntities implements Serializable  {
+    @Id
+    private int roomId;
+    private String roomName;
+    private String description;
     
+    public ChattrEntities() {
+    }
+
+    public ChattrEntities(int roomId, String roomName, String description) {
+        this.roomId = roomId;
+        this.roomName = roomName;
+        this.description = description;
+    }
 }
