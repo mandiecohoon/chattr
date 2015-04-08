@@ -31,10 +31,10 @@ function createRoom() {
         contentType: "application/json",
        success: getRoomList
     });
-    getRoomList();
 }
 
 function getMessages(id) {
+    id = parseInt(id);
     $.ajax({
        url: 'rs/room/' + id,
        dataType: 'json',
@@ -44,7 +44,24 @@ function getMessages(id) {
            tempDataStr = JSON.stringify(data);
            tempDataPrse = JSON.parse(tempDataStr);
            drawMessageList(tempDataPrse);
+           $('#roomId').val(id);
        },
+    });
+}
+
+function sendMessage(message, id) {
+    $.ajax({
+       url: 'rs/room/' + id,
+       method: 'POST',
+       data: JSON.stringify({ 
+           'messageId' : null,
+           'message' : message,
+           'roomId' : parseInt(id)
+        }),
+        contentType: "application/json",
+        success: function() {
+            setTimeout(getMessages(id), 1000);
+        }
     });
 }
 
@@ -56,7 +73,7 @@ function drawRoomList(data) {
 }
 
 function drawRoomListRow(rowData) {
-    var row = $("<ul />")
+    var row = $("<ul />");
     $("#room").append(row);
     row.append($("<li><a onclick='getMessages(" + rowData.roomId + ")'>" + rowData.roomName + " –  " + rowData.description + "</a></li>"));
 }
@@ -69,7 +86,7 @@ function drawMessageList(data) {
 }
 
 function drawMessageListRow(rowData) {
-    var row = $("<ul />")
+    var row = $("<ul />");
     $("#messages").append(row);
     row.append($("<li>" + rowData.message + "</li>"));
 }

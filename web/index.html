@@ -62,14 +62,14 @@ and open the template in the editor.
                     <p><button onclick="createRoom()">Create Room</button></p>
                     <p><button onclick="getRoomList()">Refresh Room List</button></p>
                     
-                    <p><input type="text" id="roomId" name="roomId" placeholder="Room Number" class="form-control"></p>
+                    <p><input type="hidden" id="roomId" name="roomId" class="form-control"></p>
                     <p><button onclick="getMessages($('#roomId').val())">Get messages</button></p>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-8 message-box form-inline">
                     <input type="text" id="message-box-input" name="message-box-input" size="75" class="form-control">
-                    <button>Send</button>
+                    <button onclick="sendMessage($('#message-box-input').val(), $('#roomId').val())">Send</button>
                 </div>
             </div>
         </div>

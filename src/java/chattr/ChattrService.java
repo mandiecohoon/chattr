@@ -121,8 +121,8 @@ public class ChattrService {
         JsonObject jsonData;
         JsonObjectBuilder jsonOB = Json.createObjectBuilder()
             .add("messageId", autoId)
-            .add("message", json.getString("roomName"))
-            .add("roomId", json.getString("roomId"));
+            .add("message", json.getString("message"))
+            .add("roomId", json.getInt("roomId"));
         jsonData = jsonOB.build();
         
         try {
