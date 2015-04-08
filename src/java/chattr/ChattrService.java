@@ -19,12 +19,14 @@ import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.UserTransaction;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -54,9 +56,14 @@ public class ChattrService {
     UserTransaction transaction;
     
     @GET
-    @Produces("application/json")
-    public Response doGet() {
-        return Response.ok(getRoomList("SELECT * FROM room"), MediaType.APPLICATION_JSON).build();
+    public Response getAll() {
+        JsonArrayBuilder json = Json.createArrayBuilder();
+        Query q = em.createQuery("SELECT r FROM Chattr r");
+        roomList = q.getResultList();
+        for (ChattrEntities r : roomList) {
+            json.add(r.toJSON());
+        }
+        return Response.ok(json.build().toString()).build();
     }
     
     @GET
