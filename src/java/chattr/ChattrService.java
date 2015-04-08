@@ -6,8 +6,8 @@
 
 package chattr;
 
-import entities.ChattrRoom;
-import entities.ChattrMessages;
+import entities.Room;
+import entities.Message;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -39,8 +39,8 @@ public class ChattrService {
     @PersistenceContext(unitName="ChattrPU")
     EntityManager em;
 
-    List<ChattrRoom> roomList;
-    List<ChattrMessages> messageList;
+    List<Room> roomList;
+    List<Message> messageList;
    
     @Inject
     UserTransaction transaction;
@@ -51,7 +51,7 @@ public class ChattrService {
         JsonArrayBuilder json = Json.createArrayBuilder();
         Query q = em.createQuery("ChattrRoom.findAll");
         roomList = q.getResultList();
-        for (ChattrRoom r : roomList) {
+        for (Room r : roomList) {
             json.add(r.toJSON());
         }
         return Response.ok(json.build().toString()).build();
@@ -64,7 +64,7 @@ public class ChattrService {
         JsonArrayBuilder json = Json.createArrayBuilder();
         Query q = em.createQuery("ChattrMessages.findAllById");
         messageList = q.getResultList();
-        for (ChattrMessages m : messageList) {
+        for (Message m : messageList) {
             json.add(m.toJSON());
         }
         return Response.ok(json.build().toString()).build();
@@ -77,7 +77,7 @@ public class ChattrService {
         Response result;
         try {
             transaction.begin();
-            ChattrRoom r = new ChattrRoom(json);
+            Room r = new Room(json);
             em.persist(r);
             transaction.commit();
             result = Response.ok().build();
@@ -95,7 +95,7 @@ public class ChattrService {
         Response result;
         try {
             transaction.begin();
-                ChattrMessages m = new ChattrMessages(json);
+                Message m = new Message(json);
                 em.persist(m);
                 transaction.commit();
                 result = Response.ok().build();
@@ -112,7 +112,7 @@ public class ChattrService {
         Response result;
         try {
             transaction.begin();
-            ChattrRoom r = (ChattrRoom) em.createNamedQuery("ChattrRoom.findByRoomId")
+            Room r = (Room) em.createNamedQuery("ChattrRoom.findByRoomId")
                     .setParameter("roomId", json.getInt("roomId"))
                     .getSingleResult();
             r.setRoomName(json.getString("roomName"));
@@ -154,7 +154,7 @@ public class ChattrService {
         Response result;
         try {
             transaction.begin();
-            ChattrRoom r = (ChattrRoom) em.createNamedQuery("ChattrRoom.findByRoomId")
+            Room r = (Room) em.createNamedQuery("ChattrRoom.findByRoomId")
                     .setParameter("roomId", id).getSingleResult();
             em.remove(r);
             transaction.commit();
