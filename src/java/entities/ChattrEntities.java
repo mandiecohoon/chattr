@@ -6,10 +6,14 @@
 
 package entities;
 
+import javax.persistence.Entity;
+
 /**
  *
  * @author Amanda Cohoon - c0628569
  */
+
+@Entity
 public class ChattrEntities {
     
 }
