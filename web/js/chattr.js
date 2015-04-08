@@ -14,8 +14,8 @@ function getRoomList() {
        method: 'GET',
        success: function(data) {
             //$('#room').text(JSON.stringify(data));
-            tmp1 = JSON.parse(data);
-            drawTable(tmp1);
+            tempData = JSON.parse(data);
+            drawRoomList(tempData);
        }
     });
 }
@@ -40,20 +40,36 @@ function getMessages(id) {
        dataType: 'json',
        method: 'GET',
        success: function(data) {
-           $('#messages').text(JSON.stringify(data));
+           //$('#messages').text(JSON.stringify(data));
+           tempDataStr = JSON.stringify(data);
+           tempDataPrse = JSON.parse(tempDataStr);
+           drawMessageList(tempDataPrse);
        },
     });
 }
 
-function drawTable(data) {
+function drawRoomList(data) {
     $("#room").empty();
     for (var i = 0; i < data.length; i++) {
-        drawRow(data[i]);
+        drawRoomListRow(data[i]);
     }
 }
 
-function drawRow(rowData) {
+function drawRoomListRow(rowData) {
     var row = $("<ul />")
     $("#room").append(row);
     row.append($("<li><a onclick='getMessages(" + rowData.roomId + ")'>" + rowData.roomName + " –  " + rowData.description + "</a></li>"));
+}
+
+function drawMessageList(data) {
+    $("#messages").empty();
+    for (var i = 0; i < data.length; i++) {
+        drawMessageListRow(data[i]);
+    }
+}
+
+function drawMessageListRow(rowData) {
+    var row = $("<ul />")
+    $("#messages").append(row);
+    row.append($("<li>" + rowData.message + "</li>"));
 }
