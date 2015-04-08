@@ -6,6 +6,7 @@
 
 $(document).ready(function() {
     getRoomList();
+    $(".message-box-button").css("visibility", "hidden");
 });
 
 function getRoomList() {
@@ -66,27 +67,33 @@ function sendMessage(message, id) {
 }
 
 function drawRoomList(data) {
-    $("#room").empty();
+    $("#frame").empty();
     for (var i = 0; i < data.length; i++) {
         drawRoomListRow(data[i]);
     }
 }
 
 function drawRoomListRow(rowData) {
-    var row = $("<ul />");
-    $("#room").append(row);
+    var row = $("<span>");
+    $("#frame").append(row);
     row.append($("<li><a onclick='getMessages(" + rowData.roomId + ")'>" + rowData.roomName + " –  " + rowData.description + "</a></li>"));
 }
 
 function drawMessageList(data) {
-    $("#messages").empty();
+    $("#frame").empty();
     for (var i = 0; i < data.length; i++) {
         drawMessageListRow(data[i]);
     }
+    var messageBoxInput = document.getElementById("message-box-input");
+    messageBoxInput.type= "text";
+    messageBoxInput.size= "75";
+    messageBoxInput.placeholder="Message";
+    
+    $(".message-box-button").css("visibility", "visible");
 }
 
 function drawMessageListRow(rowData) {
     var row = $("<ul />");
-    $("#messages").append(row);
+    $("#frame").append(row);
     row.append($("<li>" + rowData.message + "</li>"));
 }

@@ -42,6 +42,9 @@ and open the template in the editor.
             .message-box-input {
                 
             }
+            .message-box-button {
+                //visibility: hidden;
+            }
             li {
                 cursor: pointer;
             }
@@ -52,8 +55,7 @@ and open the template in the editor.
         <div class="container-fluid">
             <div class="row container-body">
                 <div class="col-md-8 content">
-                    <ul id="room"></ul>
-                    <ul id="messages"></ul>
+                    <ul id="frame"></ul>
                     
                 </div>
                 <div class="col-md-4 sidebar">
@@ -68,8 +70,8 @@ and open the template in the editor.
             </div>
             <div class="row">
                 <div class="col-md-8 message-box form-inline">
-                    <input type="text" id="message-box-input" name="message-box-input" size="75" class="form-control">
-                    <button onclick="sendMessage($('#message-box-input').val(), $('#roomId').val())">Send</button>
+                    <input type="hidden" id="message-box-input" name="message-box-input" class="form-control">
+                    <button onclick="sendMessage($('#message-box-input').val(), $('#roomId').val())" class="form-control message-box-button">Send</button>
                 </div>
             </div>
         </div>
