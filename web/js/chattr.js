@@ -36,6 +36,10 @@ function createRoom() {
     });
 }
 
+function updateRoom(id) {
+    
+}
+
 function deleteRoom(id) {
     id = parseInt(id);
     $.ajax({
