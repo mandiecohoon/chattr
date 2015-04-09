@@ -11,40 +11,124 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <link href='http://fonts.googleapis.com/css?family=Dancing+Script|Courgette' rel='stylesheet' type='text/css'>
         <script src="js/chattr.js"></script>
         <style>
             body {
                 margin: auto;
                 width: 70%;
+                height: 100%;
                 padding: 10px;
             }
-            .row {
+            .container-fluid {
                 border: 1px solid black;
                 border-radius: 5px;
+            }
+            h1 {
+                font-family: 'Dancing Script', cursive;
+            }
+            .container-body {
                 padding: 10px;
             }
-            .col-md-4 {
+            .content-header {
+                display: block;
+            }
+            .backButton {
+                margin-left: -20px;
+                margin-top: -8px;
+            }
+            #chatRoomTitle {
+                font-size: 1em;
+                font-family: 'Courgette', cursive;
+                margin-top: -25px;
+                padding: 10px;
+            }
+            .deleteRoom {
+                margin-right: -10px;
+                float: right;
+            }
+            .updateRoomButton {
+                float: right;
+                margin-right: 5px;
+            }
+            #frame {
+                max-height: 70vh;
+                overflow-y: scroll;
+            }
+            .sidebar {
                 border-left: 2px solid black;
                 padding: 20px;
+                text-align: right;
+            }
+            .message-box {
+                margin: 10px;
+            }
+            li {
+                cursor: pointer;
+            }
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+            ::-webkit-scrollbar-track {
+                -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1); 
+                border-radius: 10px;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                border-radius: 10px;
+                -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.2); 
             }
         </style>
     </head>
     <body>
+        <h1>Chattr</h1>
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-8">
-                    <p id="room"></p>
-                    <p id="messages"></p>
+            <div class="row container-body">
+                <div class="col-md-8 content">
+                    <div class="content-header">
+                        <button onclick="getRoomList()" class="btn btn-default backButton"><span class="glyphicon glyphicon-chevron-left"></span></button>
+                        <span id="chatRoomTitle"></span>
+                        <button onclick="deleteRoom($('#roomId').val())" class="btn btn-default btn-xs deleteRoom"><span class="glyphicon glyphicon-trash text-danger"></span></button>
+                        <button data-toggle="modal" data-target=".bs-example-modal-sm" class="btn btn-default btn-xs updateRoomButton"><span class="glyphicon glyphicon-edit text-warning"></span></button>
+                    </div>
+                    <dl class="dl-horizontal" id="frame"></dl>
                 </div>
-                <div class="col-md-4">
-                    <p><input type="text" id="roomName" name="roomName"></p>
-                    <p><input type="text" id="description" name="description"></p>
-                    <p><button onclick="createRoom()">Create Room</button></p>
-                    <p><button onclick="getRoomList()">Refresh Room List</button></p>
+                <div class="col-md-4 sidebar">
+                    <p><input type="text" id="roomName" name="roomName" placeholder="Room Name" class="form-control"></p>
+                    <p><input type="text" id="description" name="description" placeholder="Description" class="form-control"></p>
+                    <p><button onclick="createRoom()" class="btn btn-default">Create Room</button></p>
+                    <p><button onclick="getRoomList()" class="btn btn-default">Refresh Room List</button></p>
                     
-                    <p><input type="text" id="roomId" name="roomId"></p>
-                    <p><button onclick="getMessages($('#roomId').val())">Get messages</button></p>
+                    <p><input type="hidden" id="roomId" name="roomId" class="form-control"></p>
+                    <p><button onclick="getMessages($('#roomId').val())" class="btn btn-default">Get messages</button></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8 message-box form-inline">
+                    <input type="hidden" id="message-box-input" name="message-box-input" class="form-control">
+                    <button onclick="sendMessage($('#message-box-input').val(), $('#roomId').val())" class="btn btn-default message-box-button">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade bs-example-modal-sm" id="modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content" style="padding:8px">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Edit Room Info</h4>
+
+                    <div class="modal-body">
+                        <label for="editRoomName">Room Name</label>
+                        <input type="text" id="editRoomName" name="editRoomName" placeholder="Room name" class="form-control">
+                        <label for="editDescription">Description</label>
+                        <input type="text" id="editDescription" name="editDescription" placeholder="Description" class="form-control">
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" onClick="updateRoom($('#roomId').val(), $('#editRoomName').val(), $('#editDescription').val()), $('#modal').modal('hide');" class="btn btn-primary">Save changes</button>
+                    </div>
                 </div>
             </div>
         </div>
