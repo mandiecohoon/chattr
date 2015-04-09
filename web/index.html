@@ -43,6 +43,10 @@ and open the template in the editor.
                 margin-top: -25px;
                 padding: 10px;
             }
+            .deleteRoom {
+                margin-right: -10px;
+                float: right;
+            }
             #frame {
                 max-height: 70vh;
                 overflow-y: scroll;
@@ -54,12 +58,6 @@ and open the template in the editor.
             }
             .message-box {
                 margin: 10px;
-            }
-            .message-box-input {
-                
-            }
-            .message-box-button {
-                //visibility: hidden;
             }
             li {
                 cursor: pointer;
@@ -86,6 +84,7 @@ and open the template in the editor.
                     <div class="content-header">
                         <button onclick="getRoomList()" class="btn btn-default backButton"><span class="glyphicon glyphicon-chevron-left"></span></button>
                         <span id="chatRoomTitle"></span>
+                        <button onclick="deleteRoom($('#roomId').val())" class="btn btn-default btn-xs deleteRoom"><span class="glyphicon glyphicon-trash text-danger"></span></button>
                     </div>
                     <dl class="dl-horizontal" id="frame"></dl>
                 </div>

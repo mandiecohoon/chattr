@@ -36,6 +36,17 @@ function createRoom() {
     });
 }
 
+function deleteRoom(id) {
+    id = parseInt(id);
+    $.ajax({
+       url: 'rs/room/' + id,
+       method: 'DELETE',
+       success: function() {
+           getRoomList();
+       }
+    });
+}
+
 function getMessages(id) {
     id = parseInt(id);
     $.ajax({
@@ -49,7 +60,7 @@ function getMessages(id) {
            drawMessageList(tempDataPrse);
            $('#roomId').val(id);
            $("#frame").scrollTop($("#frame")[0].scrollHeight);
-       },
+       }
     });
 }
 
@@ -103,6 +114,7 @@ function setVisible() {
     messageBoxInput.placeholder="Message";
     $(".message-box-button").css("visibility", "visible");
     $(".backButton").css("visibility", "visible");
+    $(".deleteRoom").css("visibility", "visible");
 }
 
 function setInvisible() {
@@ -110,6 +122,7 @@ function setInvisible() {
     messageBoxInput.type= "hidden";
     $(".message-box-button").css("visibility", "hidden");
     $(".backButton").css("visibility", "hidden");
+    $(".deleteRoom").css("visibility", "hidden");
     $("#chatRoomTitle").empty();
 }
 

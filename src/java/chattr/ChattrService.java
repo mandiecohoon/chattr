@@ -180,6 +180,8 @@ public class ChattrService {
         return result;
     }
     */
+    
+    // Delete a room - with all its messages
     @DELETE
     @Path("{id}")
     public Response delete(@PathParam("id") int id) {
