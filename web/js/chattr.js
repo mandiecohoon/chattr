@@ -6,7 +6,7 @@
 
 $(document).ready(function() {
     getRoomList();
-    $(".message-box-button").css("visibility", "hidden");
+    setInvisible();
 });
 
 function getRoomList() {
@@ -19,6 +19,8 @@ function getRoomList() {
             drawRoomList(tempData);
        }
     });
+    $('#roomId').val(null);
+    setInvisible();
 }
 function createRoom() {
     $.ajax({
@@ -46,6 +48,7 @@ function getMessages(id) {
            tempDataPrse = JSON.parse(tempDataStr);
            drawMessageList(tempDataPrse);
            $('#roomId').val(id);
+           $("#frame").scrollTop($("#frame")[0].scrollHeight);
        },
     });
 }
@@ -76,7 +79,7 @@ function drawRoomList(data) {
 function drawRoomListRow(rowData) {
     var row = $("<span>");
     $("#frame").append(row);
-    row.append($("<li><a onclick='getMessages(" + rowData.roomId + ")'>" + rowData.roomName + " –  " + rowData.description + "</a></li>"));
+    row.append($("<li><a onclick='getMessages(" + rowData.roomId + "),setRoomName( \"" + rowData.roomName + "\")'>" + rowData.roomName + " –  " + rowData.description + "</a></li>"));
 }
 
 function drawMessageList(data) {
@@ -84,16 +87,33 @@ function drawMessageList(data) {
     for (var i = 0; i < data.length; i++) {
         drawMessageListRow(data[i]);
     }
+    setVisible();
+}
+
+function drawMessageListRow(rowData) {
+    var row = $("<dl>");
+    $("#frame").append(row);
+    row.append($("<dt style=\"max-width:15px; margin-left:0px;\"><span class=\"glyphicon glyphicon-user\"></span></dt><dd style=\"margin-left: 30px;\">" + rowData.message + "</dd>"));
+}
+
+function setVisible() {
     var messageBoxInput = document.getElementById("message-box-input");
     messageBoxInput.type= "text";
     messageBoxInput.size= "75";
     messageBoxInput.placeholder="Message";
-    
     $(".message-box-button").css("visibility", "visible");
+    $(".backButton").css("visibility", "visible");
 }
 
-function drawMessageListRow(rowData) {
-    var row = $("<ul />");
-    $("#frame").append(row);
-    row.append($("<li>" + rowData.message + "</li>"));
+function setInvisible() {
+    var messageBoxInput = document.getElementById("message-box-input");
+    messageBoxInput.type= "hidden";
+    $(".message-box-button").css("visibility", "hidden");
+    $(".backButton").css("visibility", "hidden");
+    $("#chatRoomTitle").empty();
+}
+
+function setRoomName(roomName) {
+    $("#chatRoomTitle").empty();
+    $("#chatRoomTitle").append(roomName);
 }
