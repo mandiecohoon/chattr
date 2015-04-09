@@ -36,7 +36,6 @@ function createRoom() {
 }
 
 function updateRoom(id, roomName, description) {
-    $('#myModal').modal('hide');
     $.ajax({
        url: 'rs/room',
        method: 'PUT',
@@ -157,6 +156,6 @@ function setRoomDescription(description) {
 }
 
 function updateRoomDialog() {
-    $('#myModal').modal('handleUpdate');
-    $('#myModal').modal('show');
+    //$('#modal').modal('handleUpdate');
+    //$('#modal').modal('show');
 }

@@ -90,7 +90,7 @@ and open the template in the editor.
                         <button onclick="getRoomList()" class="btn btn-default backButton"><span class="glyphicon glyphicon-chevron-left"></span></button>
                         <span id="chatRoomTitle"></span>
                         <button onclick="deleteRoom($('#roomId').val())" class="btn btn-default btn-xs deleteRoom"><span class="glyphicon glyphicon-trash text-danger"></span></button>
-                        <button onclick="updateRoomDialog()" data-toggle="modal" data-target=".bs-example-modal-sm" class="btn btn-default btn-xs updateRoomButton"><span class="glyphicon glyphicon-edit text-warning"></span></button>
+                        <button data-toggle="modal" data-target=".bs-example-modal-sm" class="btn btn-default btn-xs updateRoomButton"><span class="glyphicon glyphicon-edit text-warning"></span></button>
                     </div>
                     <dl class="dl-horizontal" id="frame"></dl>
                 </div>
@@ -112,7 +112,7 @@ and open the template in the editor.
             </div>
         </div>
 
-        <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal fade bs-example-modal-sm" id="modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-sm">
                 <div class="modal-content" style="padding:8px">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -127,7 +127,7 @@ and open the template in the editor.
                     
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" onClick="updateRoom($('#roomId').val(), $('#editRoomName').val(), $('#editDescription').val())" class="btn btn-primary">Save changes</button>
+                        <button type="button" onClick="updateRoom($('#roomId').val(), $('#editRoomName').val(), $('#editDescription').val()), $('#modal').modal('hide');" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>
