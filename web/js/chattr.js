@@ -14,7 +14,6 @@ function getRoomList() {
        url: 'rs/room',
        method: 'GET',
        success: function(data) {
-            //$('#room').text(JSON.stringify(data));
             tempData = JSON.parse(data);
             drawRoomList(tempData);
        }
@@ -36,7 +35,23 @@ function createRoom() {
     });
 }
 
-function updateRoom(id) {
+function updateRoom(id, roomName, description) {
+    $('#myModal').modal('hide');
+    $.ajax({
+       url: 'rs/room',
+       method: 'PUT',
+       data: JSON.stringify({ 
+           'roomId' : parseInt(id),
+           'roomName' : roomName,
+           'description' : description
+        }),
+        contentType: "application/json",
+        success: function() {
+            setTimeout(getMessages(id), 1000); 
+            setRoomName(roomName);
+            setRoomDescription(description);
+        }
+    });
     
 }
 
@@ -58,7 +73,6 @@ function getMessages(id) {
        dataType: 'json',
        method: 'GET',
        success: function(data) {
-           //$('#messages').text(JSON.stringify(data));
            tempDataStr = JSON.stringify(data);
            tempDataPrse = JSON.parse(tempDataStr);
            drawMessageList(tempDataPrse);
@@ -94,7 +108,7 @@ function drawRoomList(data) {
 function drawRoomListRow(rowData) {
     var row = $("<span>");
     $("#frame").append(row);
-    row.append($("<li><a onclick='getMessages(" + rowData.roomId + "),setRoomName( \"" + rowData.roomName + "\")'>" + rowData.roomName + " –  " + rowData.description + "</a></li>"));
+    row.append($("<li><a onclick='getMessages(" + rowData.roomId + "),setRoomName(\"" + rowData.roomName + "\"),setRoomDescription(\"" + rowData.description + "\")'>" + rowData.roomName + " –  " + rowData.description + "</a></li>"));
 }
 
 function drawMessageList(data) {
@@ -119,6 +133,7 @@ function setVisible() {
     $(".message-box-button").css("visibility", "visible");
     $(".backButton").css("visibility", "visible");
     $(".deleteRoom").css("visibility", "visible");
+    $(".updateRoomButton").css("visibility", "visible");
 }
 
 function setInvisible() {
@@ -127,10 +142,21 @@ function setInvisible() {
     $(".message-box-button").css("visibility", "hidden");
     $(".backButton").css("visibility", "hidden");
     $(".deleteRoom").css("visibility", "hidden");
+    $(".updateRoomButton").css("visibility", "hidden");
     $("#chatRoomTitle").empty();
 }
 
 function setRoomName(roomName) {
     $("#chatRoomTitle").empty();
     $("#chatRoomTitle").append(roomName);
+    $("#editRoomName").val(roomName);
+}
+
+function setRoomDescription(description) {
+    $("#editDescription").val(description);
+}
+
+function updateRoomDialog() {
+    $('#myModal').modal('handleUpdate');
+    $('#myModal').modal('show');
 }

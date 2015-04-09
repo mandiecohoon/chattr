@@ -11,6 +11,7 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
         <link href='http://fonts.googleapis.com/css?family=Dancing+Script|Courgette' rel='stylesheet' type='text/css'>
         <script src="js/chattr.js"></script>
         <style>
@@ -47,7 +48,7 @@ and open the template in the editor.
                 margin-right: -10px;
                 float: right;
             }
-            .updateRoom {
+            .updateRoomButton {
                 float: right;
                 margin-right: 5px;
             }
@@ -89,7 +90,7 @@ and open the template in the editor.
                         <button onclick="getRoomList()" class="btn btn-default backButton"><span class="glyphicon glyphicon-chevron-left"></span></button>
                         <span id="chatRoomTitle"></span>
                         <button onclick="deleteRoom($('#roomId').val())" class="btn btn-default btn-xs deleteRoom"><span class="glyphicon glyphicon-trash text-danger"></span></button>
-                        <button onclick="updateRoom($('#roomId').val())" class="btn btn-default btn-xs updateRoom"><span class="glyphicon glyphicon-edit text-warning"></span></button>
+                        <button onclick="updateRoomDialog()" data-toggle="modal" data-target=".bs-example-modal-sm" class="btn btn-default btn-xs updateRoomButton"><span class="glyphicon glyphicon-edit text-warning"></span></button>
                     </div>
                     <dl class="dl-horizontal" id="frame"></dl>
                 </div>
@@ -107,6 +108,27 @@ and open the template in the editor.
                 <div class="col-md-8 message-box form-inline">
                     <input type="hidden" id="message-box-input" name="message-box-input" class="form-control">
                     <button onclick="sendMessage($('#message-box-input').val(), $('#roomId').val())" class="btn btn-default message-box-button">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content" style="padding:8px">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Edit Room Info</h4>
+
+                    <div class="modal-body">
+                        <label for="editRoomName">Room Name</label>
+                        <input type="text" id="editRoomName" name="editRoomName" placeholder="Room name" class="form-control">
+                        <label for="editDescription">Description</label>
+                        <input type="text" id="editDescription" name="editDescription" placeholder="Description" class="form-control">
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" onClick="updateRoom($('#roomId').val(), $('#editRoomName').val(), $('#editDescription').val())" class="btn btn-primary">Save changes</button>
+                    </div>
                 </div>
             </div>
         </div>

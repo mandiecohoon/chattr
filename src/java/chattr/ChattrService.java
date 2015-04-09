@@ -144,7 +144,7 @@ public class ChattrService {
         Response result;
         try {
             transaction.begin();
-            Room r = (Room) em.createNamedQuery("ChattrRoom.findByRoomName")
+            Room r = (Room) em.createNamedQuery("ChattrRoom.findByRoomId")
                     .setParameter("roomId", json.getInt("roomId"))
                     .getSingleResult();
             r.setRoomName(json.getString("roomName"));
