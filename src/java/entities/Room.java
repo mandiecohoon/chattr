@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.PostPersist;
 
 /**
  *
@@ -76,5 +77,10 @@ public class Room implements Serializable  {
                 .add("roomName", roomName)
                 .add("description", description)
                 .build();
+    }
+    
+    @PostPersist void onPostPersist() {
+        System.out.println("PrePersist - Insert added to database.");
+        
     }
 }
