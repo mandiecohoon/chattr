@@ -6,6 +6,7 @@
 
 package entities;
 
+import java.io.IOException;
 import java.io.Serializable;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -14,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.PostPersist;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -79,8 +81,8 @@ public class Room implements Serializable  {
                 .build();
     }
     
-    @PostPersist void onPostPersist() {
+    @PostPersist Response onPostPersist() throws IOException {
         System.out.println("PrePersist - Insert added to database.");
-        
+        return chattr.ChattrService.newp();
     }
 }
