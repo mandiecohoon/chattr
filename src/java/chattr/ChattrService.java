@@ -211,7 +211,7 @@ public class ChattrService {
     }
     
     public static String callURL(String myURL) {
-        System.out.println("Requeted URL:" + myURL);
+        System.out.println("Requested URL:" + myURL);
         StringBuilder sb = new StringBuilder();
         URLConnection urlConn = null;
         InputStreamReader in = null;
