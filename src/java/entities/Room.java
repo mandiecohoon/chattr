@@ -26,7 +26,8 @@ import javax.ws.rs.core.Response;
 @NamedQueries({
     @NamedQuery(name = "ChattrRoom.findAll", query = "SELECT r FROM Room r"),
     @NamedQuery(name = "ChattrRoom.findByRoomId", query = "SELECT r FROM Room r WHERE r.roomId = :roomId"),
-    @NamedQuery(name = "ChattrRoom.findByName", query = "SELECT r FROM Room r WHERE r.roomName = :roomName")
+    @NamedQuery(name = "ChattrRoom.findByName", query = "SELECT r FROM Room r WHERE r.roomName = :roomName"),
+    @NamedQuery(name = "ChattrRoom.findOne", query = "SELECT r FROM Room r ORDER BY r.roomId DESC")
 })
 public class Room implements Serializable  {
     @Id
@@ -82,7 +83,8 @@ public class Room implements Serializable  {
     }
     
     @PostPersist Response onPostPersist() throws IOException {
-        System.out.println("PrePersist - Insert added to database.");
-        return chattr.ChattrService.newp();
+        System.out.println("PostPersist - Insert added to database.");
+        //return chattr.ChattrService.newp();
+        return Response.ok().build();
     }
 }

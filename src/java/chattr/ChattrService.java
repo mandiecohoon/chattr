@@ -8,13 +8,6 @@ package chattr;
 
 import entities.Message;
 import entities.Room;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.Charset;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
@@ -86,12 +79,16 @@ public class ChattrService {
     public Response add(JsonObject json) throws SQLException {
         Response result;
         
-        // Finds last inserted row and gets the value of the primary key
-        PreparedStatement pstmtID = Credentials.getConnection().prepareStatement("SELECT `roomId` FROM room ORDER BY `roomId` DESC LIMIT 1");
-        ResultSet rs = pstmtID.executeQuery();
-        rs.next();
-        int autoId = rs.getInt("roomId") + 1;
-        // Creates a new object with the same data but with a correct ID
+        // Find the Id of the last inserted item and adds one to create the next Id
+        Query q = em.createNamedQuery("ChattrRoom.findOne");
+        List<Room> autoIdList =  q.setMaxResults(1).getResultList();
+        int autoId = 0;
+        for (Room r : autoIdList) {
+            autoId = r.getRoomId();
+        }
+        autoId++;
+        
+        // Creates a new json object with the correct Id
         JsonObject jsonData;
         JsonObjectBuilder jsonOB = Json.createObjectBuilder()
             .add("roomId", autoId)
@@ -117,11 +114,16 @@ public class ChattrService {
     @Consumes("application/json")
     public Response add(JsonObject json, @PathParam("id") int id) throws SQLException {
         Response result;
-        // Finds last inserted row and gets the value of the primary key
-        PreparedStatement pstmtID = Credentials.getConnection().prepareStatement("SELECT `messageId` FROM message ORDER BY `messageId` DESC LIMIT 1");
-        ResultSet rs = pstmtID.executeQuery();
-        rs.next();
-        int autoId = rs.getInt("messageId") + 1;
+        
+        // Find the Id of the last inserted item and adds one to create the next Id
+        Query q = em.createNamedQuery("ChattrMessages.findOne");
+        List<Message> autoIdList =  q.setMaxResults(1).getResultList();
+        int autoId = 0;
+        for (Message m : autoIdList) {
+            autoId = m.getMessageId();
+        }
+        autoId++;
+        
         // Creates a new object with the same data but with a correct ID
         JsonObject jsonData;
         JsonObjectBuilder jsonOB = Json.createObjectBuilder()
@@ -204,6 +206,8 @@ public class ChattrService {
         return result;
     }
     
+    //Attempt to add 2 way messaging
+    /*
     public static Response newp() {
         String url = "http://localhost:8080/chattr/rs/room";
         System.out.println(callURL(url));
@@ -239,4 +243,5 @@ public class ChattrService {
 
         return sb.toString();
     }
+    */
 }
