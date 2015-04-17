@@ -54,7 +54,7 @@ public class ChattrService {
     
     // Get room list
     @GET
-    public Response getAll() {
+    public Response getAllRooms() {
         JsonArrayBuilder json = Json.createArrayBuilder();
         Query q = em.createNamedQuery("ChattrRoom.findAll");
         roomList = q.getResultList();
@@ -67,7 +67,7 @@ public class ChattrService {
     // Get messages list
     @GET
     @Path("{id}")
-    public Response getById(@PathParam("id") int id) {
+    public Response getAllMessagesInRoom(@PathParam("id") int id) {
         JsonArrayBuilder json = Json.createArrayBuilder();
         Query q = em.createNamedQuery("ChattrMessages.findByAllId")
                 .setParameter("roomId", id);
@@ -77,7 +77,8 @@ public class ChattrService {
         }
         return Response.ok(json.build().toString()).build();
     }
-    // Get one message
+    
+    // Get one message by its id
     @GET
     @Path("{roomId}/{messageId}")
     public Response getMessageById(@PathParam("roomId") int roomId, @PathParam("messageId") int messageId) {
@@ -94,7 +95,7 @@ public class ChattrService {
     // Post a room
     @POST
     @Consumes("application/json")
-    public Response add(JsonObject json) throws SQLException {
+    public Response addRoom(JsonObject json) throws SQLException {
         Response result;
         
         // Find the Id of the last inserted item and adds one to create the next Id
@@ -130,7 +131,7 @@ public class ChattrService {
     @POST
     @Path("{id}")
     @Consumes("application/json")
-    public Response add(JsonObject json, @PathParam("id") int id) throws SQLException {
+    public Response addMessage(JsonObject json, @PathParam("id") int id) throws SQLException {
         Response result;
         
         // Find the Id of the last inserted item and adds one to create the next Id
@@ -165,7 +166,7 @@ public class ChattrService {
     // Update a room
     @PUT
     @Consumes("application/json")
-    public Response edit(JsonObject json) {
+    public Response editRoom(JsonObject json) {
         Response result;
         try {
             transaction.begin();
@@ -183,7 +184,7 @@ public class ChattrService {
         return result;
     }
     
-    // Update a message
+    // Update a message by its id
     @PUT
     @Path("{roomId}/{messageId}")
     @Consumes("application/json")
@@ -209,7 +210,7 @@ public class ChattrService {
     // Delete a room - with all its messages
     @DELETE
     @Path("{id}")
-    public Response delete(@PathParam("id") int id) {
+    public Response deleteRoom(@PathParam("id") int id) {
         Response result;
         try {
             transaction.begin();
@@ -224,6 +225,7 @@ public class ChattrService {
         return result;
     }
     
+    // Delete a message by its id
     @DELETE
     @Path("{roomId}/{messageId}")
     public Response deleteMessage(@PathParam("roomId") int roomId, @PathParam("messageId") int messageId) {
