@@ -19,6 +19,11 @@ import javax.json.JsonObjectBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -66,6 +71,19 @@ public class ChattrService {
         JsonArrayBuilder json = Json.createArrayBuilder();
         Query q = em.createNamedQuery("ChattrMessages.findByAllId")
                 .setParameter("roomId", id);
+        messageList = q.getResultList();
+        for (Message m : messageList) {
+            json.add(m.toJSON());
+        }
+        return Response.ok(json.build().toString()).build();
+    }
+    // Get one message
+    @GET
+    @Path("{roomId}/{messageId}")
+    public Response getMessageById(@PathParam("roomId") int roomId, @PathParam("messageId") int messageId) {
+        JsonArrayBuilder json = Json.createArrayBuilder();
+        Query q = em.createNamedQuery("ChattrMessages.findById")
+                .setParameter("messageId", messageId);
         messageList = q.getResultList();
         for (Message m : messageList) {
             json.add(m.toJSON());
@@ -164,29 +182,29 @@ public class ChattrService {
         }
         return result;
     }
-    /*
+    
     // Update a message
     @PUT
-    @Path("{id}")
+    @Path("{roomId}/{messageId}")
     @Consumes("application/json")
-    public Response edit(JsonObject json, @PathParam("id") int id) {
+    public Response editMessage(JsonObject json, @PathParam("roomId") int roomId, @PathParam("messageId") int messageId) {
         Response result;
         try {
             transaction.begin();
-            ChattrRoom r = (ChattrRoom) em.createNamedQuery("ChattrRoom.findByRoomId")
-                    .setParameter("roomId", json.getInt("roomId"))
+            Message m = (Message) em.createNamedQuery("ChattrMessages.findById")
+                    .setParameter("messageId", messageId)
                     .getSingleResult();
-            r.setRoomName(json.getString("roomName"));
-            r.setDescription(json.getString("description"));
-            em.persist(r);
+            m.setMessage(json.getString("message"));
+            m.setRoomId(roomId);
+            em.persist(m);
             transaction.commit();
             result = Response.ok().build();
-        } catch (Exception ex) {
+        } catch (IllegalStateException | SecurityException | HeuristicMixedException | HeuristicRollbackException | NotSupportedException | RollbackException | SystemException ex) {
             result = Response.status(500).entity(ex.getMessage()).build();
         }
         return result;
     }
-    */
+    
     
     // Delete a room - with all its messages
     @DELETE
@@ -198,6 +216,23 @@ public class ChattrService {
             Room r = (Room) em.createNamedQuery("ChattrRoom.findByRoomId")
                     .setParameter("roomId", id).getSingleResult();
             em.remove(r);
+            transaction.commit();
+            result = Response.ok().build();
+        } catch (Exception ex) {
+            result = Response.status(500).entity(ex.getMessage()).build();
+        }
+        return result;
+    }
+    
+    @DELETE
+    @Path("{roomId}/{messageId}")
+    public Response deleteMessage(@PathParam("roomId") int roomId, @PathParam("messageId") int messageId) {
+        Response result;
+        try {
+            transaction.begin();
+            Message m = (Message) em.createNamedQuery("ChattrMessages.findById")
+                    .setParameter("messageId", messageId).getSingleResult();
+            em.remove(m);
             transaction.commit();
             result = Response.ok().build();
         } catch (Exception ex) {

@@ -23,7 +23,8 @@ import javax.persistence.NamedQuery;
 @NamedQueries({
     @NamedQuery(name = "ChattrMessages.findAll", query = "SELECT m FROM Message m"),
     @NamedQuery(name = "ChattrMessages.findByAllId", query = "SELECT m FROM Message m WHERE m.roomId = :roomId"),
-    @NamedQuery(name = "ChattrMessages.findOne", query = "SELECT m FROM Message m ORDER BY m.messageId DESC")
+    @NamedQuery(name = "ChattrMessages.findOne", query = "SELECT m FROM Message m ORDER BY m.messageId DESC"),
+    @NamedQuery(name = "ChattrMessages.findById", query = "SELECT m FROM Message m WHERE m.messageId = :messageId")
 })
 public class Message implements Serializable {
     @Id
